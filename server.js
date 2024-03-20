@@ -61,10 +61,10 @@ async function init(){
     try{
 
         user = await user_module.create({
-            name : "umair",
+            name : "vinay",
             userid : "admin",
-            password : bcryptjs.hashSync("UmairKadmin432",9), // were storing the password in a normal string which is not safe so we tried to encrypt it using dependency
-            email : "admin4526@gmail.com",
+            password : bcryptjs.hashSync("admin432",9), // were storing the password in a normal string which is not safe so we tried to encrypt it using dependency
+            email : "admin432@gmail.com",
             userType : "ADMIN"
         })
         
