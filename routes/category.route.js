@@ -25,3 +25,6 @@ module.exports = (app)=>{
     /**Update category using url :-   localhost : 8110/ecom/api/v1/update_category */
     app.put("/ecom/api/v1/update_category",[categ_middleware.tokenverification,categ_middleware.IsAdmin_Check,categ_middleware.Validate_Update_Body],categ_controller.Update_category);
 }
+
+//Note :- Customer can only get the category details and for getting the category detail he/she should have token 
+// whereas the ADMIN can create category , delete category and can update category but the admin also should have token for it

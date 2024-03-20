@@ -17,5 +17,8 @@ module.exports = (app)=>{
     app.delete("/ecom/api/v1/delete_product",[catg_middleware.tokenverification,catg_middleware.IsAdmin_Check,prod_middleware.Del_prod_validate],prod_controller.Delete_product);
     
     /**For Updating the existing product the URL :-    localhost : 8110/ecom/api/v1/Update_product */
-    app.put("/ecom/api/v1/Update_product",prod_controller.Update_product);
+    app.put("/ecom/api/v1/Update_product",[catg_middleware.tokenverification,catg_middleware.IsAdmin_Check,prod_middleware.update_Prod_validate],prod_controller.Update_product);
 }
+
+//Note :- the customer can only get the details of the product but he/she should have token with them
+//whereas the admin can do all the task like get product, create product,delete product and as well as update the product 
