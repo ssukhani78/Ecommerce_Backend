@@ -19,23 +19,6 @@ exports.create_New_Category = async (req, res) => {
 
     try {
 
-        const alreadyexist = await category_model.findOne({ name: req.body.name });
-
-        if (alreadyexist) {
-            return res.status(400).send({
-                mess: "This Category already exist in Database"
-            })
-        }
-
-    } catch (err) {
-        console.log("Error while finding the category in the database ", err);
-        return res.status(500).send({
-            mess: "Error while finding the category in the database"
-        })
-    }
-
-    try {
-
         const obj_C = await category_model.create(category_obj);
 
         res.status(201).send(obj_C);
@@ -80,24 +63,7 @@ exports.getcategory = async (req,res)=>{
 
 
 exports.Delete_category = async (req,res)=>{
-    //Get the request body for deleting the category
-    //find the given category exists or not if exists then delete it and if it doesn't exist then show the error message
-    try{
-
-        const categ = await category_model.findOne({name : req.body.name});
-        // console.log(categ.name);
-        
-        if(categ == null){
-            return res.status(404).send({
-                Message : "Category Not found !!!"
-            })
-        }
-    }catch(err){
-        res.status(500).send({
-            mess : "error in searching the category"
-        })
-    }
-
+    //Find the item and delete that item from the model
     try{
         const deleted = await category_model.deleteOne({ name :  req.body.name});
 
@@ -119,23 +85,6 @@ exports.Delete_category = async (req,res)=>{
 exports.Update_category = async (req,res)=>{
     //Read request body of category from user
         const request_body = req.body;
-    // Then find that e=category in the category model
-    try{
-
-        const found = await category_model.findOne({"name" : request_body.name});
-        //if doesn't exist then return an error message by showing CATEGORY NOT FOUND!!!
-        
-        if(found==null){
-            return res.status(404).send({
-                Mess : "Category not found"
-            })
-        }
-    }catch(err){
-        console.log("Error searching category",err);
-        return res.status(500).send({
-            mess : "Error searching category"
-        })
-    }
     
     //If exist then make the changes in the name passed by the user
     try{

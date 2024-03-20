@@ -16,7 +16,7 @@ module.exports = (app)=>{
 
 
     /** Get Category using URL :-  localhost : 8110/ecom/api/v1/get_categories*/
-    app.get("/ecom/api/v1/get_categories",[categ_middleware.tokenverification],categ_controller.getcategory);
+    app.get("/ecom/api/v1/get_categories",[categ_middleware.tokenverification,categ_middleware.validate_Get_catg_body],categ_controller.getcategory);
 
 
     /**Delete category using url :-   localhost : 8110/ecom/api/v1/delete_category */

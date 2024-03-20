@@ -3,8 +3,9 @@
 const jwt = require("jsonwebtoken");
 const secret_key = require("../configuration/auth.config");
 const usermodel = require("../models/user.model");
+const category_model = require("../models/category.model");
 
-const Validate_Category = (req, res, next) => {
+const Validate_Category = async (req, res, next) => {
     try {
 
         if (!req.body.name && !req.body.Description) {
@@ -25,6 +26,23 @@ const Validate_Category = (req, res, next) => {
             })
         }
 
+        try {
+
+            const alreadyexist = await category_model.findOne({ name: req.body.name });
+
+            if (alreadyexist) {
+                return res.status(400).send({
+                    mess: "This Category already exist in Database"
+                })
+            }
+
+        } catch (err) {
+            console.log("Error while finding the category in the database ", err);
+            return res.status(500).send({
+                mess: "Error while finding the category in the database"
+            })
+        }
+
         next();
 
     } catch (err) {
@@ -36,46 +54,89 @@ const Validate_Category = (req, res, next) => {
     }
 }
 
+const validate_getCategory_body = (req, res, next) => {
+    if (!req.body.name) {
+        return res.status(404).send({
+            REQUIRED: "Category name is Required..!!!"
+        })
+    }
+    next();
+}
 
-const validate_deletebody = (req,res,next)=>{
-    try{
-        
-        if(!req.body.name){
+const validate_deletebody = async (req, res, next) => {
+    try {
+
+        if (!req.body.name) {
             return res.status(404).send({
-                REQUIRED : "Name of the Category is required"
+                REQUIRED: "Name of the Category is required"
             })
         }
-        
+
+        //find the given category exists or not if exists then delete it and if it doesn't exist then show the error message
+        try {
+
+            const categ = await category_model.findOne({ name: req.body.name });
+            // console.log(categ.name);
+
+            if (!categ) {
+                return res.status(404).send({
+                    Message: "Category Not found !!!"
+                })
+            }
+        } catch (err) {
+            res.status(500).send({
+                mess: "error in searching the category"
+            })
+        }
+
         next();
-    }catch(err){
+    } catch (err) {
         res.status(500).send({
-            error : "Error while validating delete request body"
+            error: "Error while validating delete request body"
         })
     }
 }
 
 
-const Validate_updateBody = (req,res,next)=>{
-    try{
+const Validate_updateBody = async (req, res, next) => {
+    try {
 
-        if(!req.body.name){
+        if (!req.body.name) {
             res.status(404).send({
-                Error : "Current Category Name is Required..!!"
+                Error: "Current Category Name is Required..!!"
             })
         }
-        
-        
-        if(!req.body.newname){
+
+
+        if (!req.body.newname) {
             res.status(404).send({
-                Error : "New Name for the Category is Required..!!"
+                Error: "New Name for the Category is Required..!!"
             })
         }
-        
+
+        // Then find that category in the category model
+        try {
+
+            const found = await category_model.findOne({ name: req.body.name });
+            //if doesn't exist then return an error message by showing CATEGORY NOT FOUND!!!
+
+            if (!found) {
+                return res.status(404).send({
+                    Mess: "Category not found...!!"
+                })
+            }
+        } catch (err) {
+            console.log("Error searching category", err);
+            return res.status(500).send({
+                mess: "Error searching category"
+            })
+        }
+
         next();
-    }catch(err){
-        console.log("Error while validating the Update request Body ",err);
+    } catch (err) {
+        console.log("Error while validating the Update request Body ", err);
         res.status(500).send({
-            Mess : "Error while validating the Update request Body "
+            Mess: "Error while validating the Update request Body "
         })
     }
 }
@@ -85,15 +146,15 @@ const Validate_updateBody = (req,res,next)=>{
 const verifyToken = (req, res, next) => {
     //check if the token is present in the header or not
     const token = req.headers['x-access-token'];
-    try{ 
+    try {
         if (!token) {
             return res.status(403).send({
                 ERROR: "No token found : Unauthorized"
             })
         }
-    }catch(err){
+    } catch (err) {
         res.status(500).send({
-            Error : "Something wrong happened "
+            Error: "Something wrong happened "
         })
     }
 
@@ -102,7 +163,7 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(token, secret_key.securitystring, async (err, decoded) => {
         if (err) {
-             return res.status(401).send({
+            return res.status(401).send({
                 message: "UNAUTHORIZED !!"
             })
         }
@@ -150,8 +211,9 @@ const IsAdmin = (req, res, next) => {
 
 module.exports = {
     Create_validator: Validate_Category,
-    Validate_Delete_Body : validate_deletebody,
-    Validate_Update_Body : Validate_updateBody,
+    validate_Get_catg_body: validate_getCategory_body,
+    Validate_Delete_Body: validate_deletebody,
+    Validate_Update_Body: Validate_updateBody,
     tokenverification: verifyToken,
     IsAdmin_Check: IsAdmin
 }
