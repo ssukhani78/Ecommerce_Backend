@@ -33,7 +33,7 @@ exports.signup = async (req, res) => {
         name: request_body.name,
         userid: request_body.userid,
         userType: request_body.userType,
-        password: bcrypt.hashSync(request_body.password, 8), // 8 act as a slting 
+        password: bcrypt.hashSync(request_body.password, 8), // 8 act as a salting 
         email: request_body.email
     }
 
@@ -95,7 +95,7 @@ exports.signin = async (req, res) => {
     //3 If all the above are done and perfect then give the access token with some TTL(time to live ~ Expiry time).
 
     const token = jwt.sign({id : user.userid }, secret.securitystring, {
-        expiresIn: 60 //120 seconds which means 2 min is the expiry time fot the webtoken
+        expiresIn: 60 //60 seconds which means 1 min is the expiry time fot the webtoken
     })
 
     res.status(200).send({
