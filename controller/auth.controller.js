@@ -95,7 +95,7 @@ exports.signin = async (req, res) => {
     //3 If all the above are done and perfect then give the access token with some TTL(time to live ~ Expiry time).
 
     const token = jwt.sign({id : user.userid }, secret.securitystring, {
-        expiresIn: 180 //60 seconds which means 1 min is the expiry time fot the webtoken
+        expiresIn: 180 //180 seconds which means 3 min is the expiry time for the webtoken
     })
 
     res.status(200).send({
