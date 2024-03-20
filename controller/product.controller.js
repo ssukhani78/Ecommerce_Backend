@@ -49,21 +49,6 @@ exports.Get_Product = async (req, res) => {
 
 exports.Delete_product = async (req, res) => {
     const prod_found = await productmodel.findOne({ name: req.body.name });
-    try {
-
-        console.log(prod_found);
-
-        if (!prod_found) {
-            return res.status(404).send({
-                Mess: "Product Not Found..!!!"
-            })
-        }
-
-    } catch (err) {
-        return res.status(404).send({
-            Mess: "Somehing went wrong during finding the product"
-        })
-    }
 
     try {
 
@@ -98,37 +83,11 @@ exports.Update_product = async (req,res)=>{
         const request_body = req.body;
 
         try{
-            
-            // find the product in the model
-            const found = await productmodel.findOne({name : request_body.name});
-            
-            // console.log(found);
-            
-            // if doesn't exist
-            if(found==null){
-                return res.status(404).send({
-                    mess : "Product Not Found in the model :("
-                })
-            }
-
-        }catch(err){
-            console.log("Couldn't find Error :- ",err);
-
-            return res.status(500).send({
-                Error : "Something went wrong"
-            })
-        }
-
-        try{
 
             // if found then update the name to the new name
             const updated = await productmodel.updateOne({name : request_body.name} , {$set : {name : request_body.newname}});
             
             const updated_data = await productmodel.findOne({name : request_body.newname});
-            
-            if(!updated){
-                console.log("Update krnee mai problem hai bhai !!");   
-            }
             
             return res.status(200).send({
                 Mess : "Successfully Updated the Product name",

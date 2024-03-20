@@ -26,5 +26,4 @@ module.exports = (app)=>{
     app.put("/ecom/api/v1/update_category",[categ_middleware.tokenverification,categ_middleware.IsAdmin_Check,categ_middleware.Validate_Update_Body],categ_controller.Update_category);
 }
 
-//Note :- Customer can only get the category details and for getting the category detail he/she should have token 
-// whereas the ADMIN can create category , delete category and can update category but the admin also should have token for it
+/** Note :- Everyone, including admins, needs tokens to do stuff. Customers need tokens to see categories, while admins can do everything with their tokens, such as getting, creating, deleting, and updating categories. */
