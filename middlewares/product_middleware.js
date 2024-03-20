@@ -1,7 +1,7 @@
 
+const product_schema = require("../models/Product.model")
 
-
-const create_Productverification = (req,res,next)=>{
+const create_Productverification = async (req,res,next)=>{
     try{
 
         if(!req.body.name){
@@ -20,6 +20,14 @@ const create_Productverification = (req,res,next)=>{
         if(!req.body.Quant){
             return res.status(404).send({
                 required : "Product Available Quantity is not mentioned"
+            })
+        }
+
+        const exists = await product_schema.findOne({name : req.body.name});
+
+        if(exists){   
+            return res.status(404).send({
+                Duplicate : "Product with that name already exists..!!"
             })
         }
         
